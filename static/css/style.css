@@ -1,0 +1,73 @@
+/* PhotoAlbum custom styles */
+
+body {
+    background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Photo thumbnail card */
+.photo-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.photo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Fixed-height thumbnail container */
+.photo-thumb-wrapper {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.photo-card:hover .photo-thumb {
+    transform: scale(1.05);
+}
+
+/* Navbar brand styling */
+.navbar-brand {
+    font-size: 1.3rem;
+    letter-spacing: 0.03em;
+}
+
+/* Alert success / error mapping */
+.alert-success { background-color: #d1e7dd; }
+.alert-error, .alert-danger { background-color: #f8d7da; }
+
+/* Card header */
+.card-header h4,
+.card-header h5 {
+    font-size: 1.1rem;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+}
+
+/* Footer */
+footer {
+    font-size: 0.85rem;
+}

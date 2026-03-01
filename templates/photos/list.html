@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block title %}Photo Gallery – PhotoAlbum{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-images"></i> Photo Gallery</h2>
+    {% if user.is_authenticated %}
+    <a href="{% url 'photo_upload' %}" class="btn btn-dark">
+        <i class="bi bi-cloud-upload"></i> Upload Photo
+    </a>
+    {% endif %}
+</div>
+
+<!-- Search & Sort Controls -->
+<div class="card mb-4 border-0 bg-light">
+    <div class="card-body py-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold mb-1">Search by name</label>
+                <div class="input-group">
+                    <input type="text" name="search" value="{{ search }}" class="form-control"
+                           placeholder="Search photos...">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold mb-1">Sort by</label>
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>Name A→Z</option>
+                    <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Name Z→A</option>
+                    <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Date newest first</option>
+                    <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Date oldest first</option>
+                </select>
+            </div>
+            {% if search %}
+            <div class="col-md-3">
+                <a href="{% url 'photo_list' %}?sort={{ sort }}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-x-circle"></i> Clear search
+                </a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% if photos %}
+<!-- Photo count -->
+<p class="text-muted small mb-3">
+    {{ photos|length }} photo{{ photos|length|pluralize }} found
+    {% if search %} matching "<strong>{{ search }}</strong>"{% endif %}
+</p>
+
+<!-- Photo grid -->
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for photo in photos %}
+    <div class="col">
+        <div class="card h-100 shadow-sm photo-card">
+            <a href="{% url 'photo_detail' photo.pk %}" class="text-decoration-none">
+                <div class="photo-thumb-wrapper">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.name }}"
+                         class="card-img-top photo-thumb" loading="lazy">
+                </div>
+            </a>
+            <div class="card-body p-3">
+                <h6 class="card-title mb-1 text-truncate fw-semibold">
+                    <a href="{% url 'photo_detail' photo.pk %}" class="text-dark text-decoration-none">
+                        {{ photo.name }}
+                    </a>
+                </h6>
+                <p class="card-text text-muted small mb-1">
+                    <i class="bi bi-calendar3"></i>
+                    {{ photo.upload_date|date:"Y-m-d H:i" }}
+                </p>
+                <p class="card-text text-muted small">
+                    <i class="bi bi-person"></i> {{ photo.owner.username }}
+                </p>
+            </div>
+            {% if user.is_authenticated and user == photo.owner or user.is_staff %}
+            <div class="card-footer bg-transparent p-2 text-end">
+                <a href="{% url 'photo_delete' photo.pk %}" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-images text-muted" style="font-size: 4rem;"></i>
+    <h4 class="mt-3 text-muted">No photos found</h4>
+    {% if search %}
+    <p class="text-muted">No photos match your search "{{ search }}".</p>
+    <a href="{% url 'photo_list' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> Back to gallery
+    </a>
+    {% elif user.is_authenticated %}
+    <p class="text-muted">Be the first to upload a photo!</p>
+    <a href="{% url 'photo_upload' %}" class="btn btn-dark mt-2">
+        <i class="bi bi-cloud-upload"></i> Upload a Photo
+    </a>
+    {% else %}
+    <p class="text-muted">Login to start uploading photos.</p>
+    <a href="{% url 'login' %}" class="btn btn-dark mt-2">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

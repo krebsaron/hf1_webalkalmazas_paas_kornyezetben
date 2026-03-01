@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}{{ photo.name }} – PhotoAlbum{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'photo_list' %}">Gallery</a></li>
+        <li class="breadcrumb-item active">{{ photo.name }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <!-- Photo display -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border-0">
+            <img src="{{ photo.image.url }}" alt="{{ photo.name }}"
+                 class="card-img-top rounded" style="max-height: 600px; object-fit: contain; background:#f8f9fa;">
+        </div>
+    </div>
+
+    <!-- Photo info panel -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> Photo Details</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless mb-0">
+                    <tbody>
+                        <tr>
+                            <th class="text-muted" style="width:40%">Name</th>
+                            <td class="fw-semibold">{{ photo.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">Uploaded</th>
+                            <td>{{ photo.upload_date|date:"Y-m-d H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">By</th>
+                            <td>{{ photo.owner.username }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% if user.is_authenticated and user == photo.owner or user.is_staff %}
+            <div class="card-footer">
+                <a href="{% url 'photo_delete' photo.pk %}" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash"></i> Delete Photo
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mt-3">
+            <a href="{% url 'photo_list' %}" class="btn btn-outline-secondary w-100">
+                <i class="bi bi-arrow-left"></i> Back to Gallery
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
